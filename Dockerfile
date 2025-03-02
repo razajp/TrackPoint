@@ -1,31 +1,38 @@
-# Use an official PHP runtime as a parent image
-FROM php:8.1-apache
+# Use the official PHP image with Apache
+FROM php:8.2-apache
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    zip \
     git \
+    curl \
+    zip \
     unzip \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    && docker-php-ext-install pdo mbstring gd xml zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy existing application directory contents
+# Copy Laravel project files
 COPY . .
 
 # Install Laravel dependencies
 RUN composer install --optimize-autoloader --no-dev
 
-# Set permissions
+# Set permissions for Laravel storage and cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port 80
+# Generate APP_KEY
+RUN php artisan key:generate
+
+# Expose port 80 to access the app
 EXPOSE 80
+
+# Start Apache server
+CMD ["apache2-foreground"]
