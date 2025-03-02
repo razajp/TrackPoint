@@ -66,7 +66,7 @@
             </div>
         </div>
         <div id="modal-action"
-            class="bg-[--secondary-bg-color] rounded-2xl shadow-lg max-w-3xl w-auto p-5 relative text-sm">
+            class="bg-[--secondary-bg-color] rounded-2xl shadow-lg max-w-3xl w-auto p-3 relative text-sm">
             <div class="flex w-full gap-4">
                 <a id="track-article-in-modal" href="{{ route('article-track') }}"
                     class="w-full px-5 py-2 text-nowrap text-center border border-gray-600 hover:bg-[--h-bg-color] rounded-lg transition-all 0.3s ease-in-out">Track
@@ -123,7 +123,7 @@
                 </div>
             </div>
             <div id="modal-action"
-                class="bg-[--secondary-bg-color] rounded-2xl shadow-lg w-[18rem] p-5 relative text-sm">
+                class="bg-[--secondary-bg-color] rounded-2xl shadow-lg w-[18rem] p-3 relative text-sm">
                 <div class="flex w-full gap-4">
                     <button id="close" type="button"
                         class="w-1/2 px-5 py-2 text-nowrap text-center border border-gray-600 hover:bg-[--h-bg-color] rounded-lg transition-all 0.3s ease-in-out">Cancel</button>

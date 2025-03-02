@@ -60,7 +60,7 @@
             </div>
             
             <div id="modal-action"
-                class="bg-[--secondary-bg-color] rounded-2xl shadow-lg max-w-3xl w-auto p-5 relative text-sm">
+                class="bg-[--secondary-bg-color] rounded-2xl shadow-lg max-w-3xl w-auto p-3 relative text-sm">
                 <div class="flex gap-4">
                     <div class="btns flex gap-3">
                         <!-- Cancel Button -->
