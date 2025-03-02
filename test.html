@@ -1,0 +1,447 @@
+@extends('layouts.app')
+@section('title', 'Show Customers | Track Point')
+@section('content')
+    <!-- Modal -->
+    <div id="customerModal"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ">
+        <!-- Modal Content -->
+        <div class="bg-[--secondary-bg-color] rounded-lg shadow-lg w-full max-w-2xl p-6 relative flex">
+            <!-- Close Button -->
+            <button onclick="closeCustomerModal()"
+                class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-all duration-300 ease-in-out">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <div class="flex text-red-500 rounded-full h-[15rem] aspect-square overflow-hidden">
+                <div id="active_inactive_dot_modal"
+                    class="active_inactive_dot absolute top-3 left-3 w-[0.7rem] h-[0.7rem] bg-[--border-error] rounded-full">
+                </div>
+                <img id="customerImage" src="{{ asset('/storage/uploads/images/default_avatar.png') }}" alt=""
+                    class="w-full h-full object-cover">
+            </div>
+
+            <!-- Modal Content -->
+            <div id="modal-contant" class="grow h-[15rem] flex flex-col justify-between">
+                <!-- Modal Body -->
+                <div id="modal_body" class="modal_body flex items-start ml-2">
+                    <div class="content ml-5">
+                        <h5 id="customer" class="text-2xl my-1 text-[--text-color] capitalize font-semibold">Hasan Raza
+                        </h5>
+                        <p class="text-[--secondary-text] mb-1 tracking-wide text-sm">
+                            <strong>Person Name:</strong>
+                            <span id="person_name" class="person_name">Salaried-staff</span>
+                        </p>
+                        <p class="text-[--secondary-text] mb-1 tracking-wide text-sm">
+                            <strong>Address:</strong>
+                            <span id="address" class="address">Karachi New Karachi</span>
+                        </p>
+                        <p class="text-[--secondary-text] mb-1 tracking-wide text-sm">
+                            <strong>City:</strong>
+                            <span id="city" class="city">Karachi</span>
+                        </p>
+                        <p class="text-[--secondary-text] mb-1 tracking-wide text-sm">
+                            <strong>Phone:</strong>
+                            <span id="phone" class="phone">00000000000</span>
+                        </p>
+                        <p class="text-[--secondary-text] mb-1 tracking-wide text-sm">
+                            <strong>Balance:</strong>
+                            <span id="balance" class="balance">00.00</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="flex justify-between space-x-3 mt-5">
+
+                    <!-- Customer Rating -->
+                    <div class="mt-3">
+                        <div id="rating" class="flex items-center space-x-1">
+                            <!-- Star Ratings -->
+                            <span class="text-yellow-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"
+                                    class="w-5 h-5">
+                                    <path
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            </span>
+                            <span class="text-yellow-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"
+                                    class="w-5 h-5">
+                                    <path
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            </span>
+                            <span class="text-yellow-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"
+                                    class="w-5 h-5">
+                                    <path
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            </span>
+                            <span class="text-yellow-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"
+                                    class="w-5 h-5">
+                                    <path
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            </span>
+                            <span class="text-gray-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"
+                                    class="w-5 h-5">
+                                    <path
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            </span>
+                            <!-- Dynamic Rating -->
+                            <span id="rating_value" class="text-[--text-color] ml-2">(4.0)</span>
+                        </div>
+                    </div>
+                    <div class="btns flex gap-3">
+                        <!-- Cancel Button -->
+                        <button onclick="closeCustomerModal()"
+                            class="px-4 py-2 bg-[--secondary-bg-color] border text-[--secondary-text] rounded hover:bg-[--bg-color] transition-all duration-300 ease-in-out">
+                            Cancel
+                        </button>
+
+                        <form method="POST" action="{{ route('update-customer-status') }}">
+                            @csrf
+                            <input type="hidden" id="customer_id" name="customer_id" value="">
+                            <input type="hidden" id="customer_status" name="status" value="">
+                            <button id="ac_in_btn" type="submit"
+                                class="px-4 py-2 bg-[--danger-color] text-white rounded hover:bg-[--h-danger-color] transition-all duration-300 ease-in-out">
+                                In Active
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto pb-2">
+        <h1 class="text-4xl font-bold my-5 text-center text-[--primary-color]  uppercase">
+            Track Point
+        </h1>
+
+        <section class="text-center mb-16 mx-auto ">
+            <div
+                class="show-box mx-auto w-[80%] h-[70vh] bg-[--secondary-bg-color] rounded-xl shadow overflow-y-auto @if (Auth::user()->layout == 'grid') p-7 pt-12 @endif relative">
+                @if (Auth::user()->layout == 'grid')
+                    <div
+                        class="form-title text-center absolute top-0 left-0 w-full bg-[--primary-color] py-1 shadow-lg uppercase font-semibold text-sm">
+                        <h4>Show Customers</h4>
+                    </div>
+                @endif
+
+                <div class="buttons absolute @if (Auth::user()->layout == 'grid') top-1 @else top-2 @endif right-4 text-sm">
+                    <div class="relative group">
+                        <form method="POST" action="{{ route('update-user-layout') }}">
+                            @csrf
+                            <input type="hidden" name="layout" value="{{ Auth::user()->layout }}">
+                            <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                            <button type="submit" class="group cursor-pointer">
+                            @if (Auth::user()->layout == 'grid')
+                                <i class="fas fa-list-ul"></i>
+                                <span
+                                    class="absolute shadow-xl text-nowrap -right-1 top-8 bg-[--h-secondary-bg-color] text-[--text-color] text-[12px] rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                    List
+                                </span>
+                            @else
+                                <i class="fas fa-table"></i>
+                                <span
+                                    class="absolute shadow-xl text-nowrap -right-1 top-8 bg-[--h-secondary-bg-color] text-[--text-color] text-[12px] rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                    Grid
+                                </span>
+                            @endif
+                        </button>
+                        </form>
+                    </div>
+                </div>
+
+                @if (count($customers) > 0)
+                <div
+                    class="add-new-article-btn absolute bottom-8 right-5 hover:scale-105 hover:bottom-9 transition-all group duration-300 ease-in-out">
+                    <a href="{{ route('customer.create') }}"
+                        class="bg-[--primary-color] text-[--text-color] px-4 py-3 rounded-full hover:bg-[--h-primary-color] transition-all duration-300 ease-in-out"><i
+                            class="fas fa-plus"></i></a>
+                    <span
+                        class="absolute shadow-xl left-1/2 -top-12 transform -translate-x-1/2 bg-[--secondary-bg-color] text-[--text-color] text-sm rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        Add
+                    </span>
+                </div>
+                @if (Auth::user()->layout == 'grid')
+                    <div class="card_container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                        @foreach ($customers as $customer)
+                            <div data-customer="{{ $customer }}"
+                                class="modalToggle card relative border border-gray-500 shadow rounded-xl min-w-[100px] h-[8rem] flex gap-4 p-4 cursor-pointer overflow-hidden fade-in">
+                                <div class="img aspect-square h-full rounded-full overflow-hidden">
+                                    <img src="{{ asset('storage/uploads/images/' . $customer->image) }}" alt=""
+                                        class="w-full h-full object-cover">
+                                    @if ($customer->status === 'active')
+                                        <div
+                                            class="active_inactive_dot absolute top-2 right-2 w-[0.6rem] h-[0.6rem] bg-[--border-success] rounded-full">
+                                        </div>
+                                        <div
+                                            class="active_inactive absolute text-sm text-[--border-success] top-1 right-2 h-[1rem]">
+                                            Active</div>
+                                    @else
+                                        <div
+                                            class="active_inactive_dot absolute top-2 right-2 w-[0.6rem] h-[0.6rem] bg-[--border-error] rounded-full">
+                                        </div>
+                                        <div
+                                            class="active_inactive absolute text-sm text-[--border-error] top-1 right-2 h-[1rem]">
+                                            In Active</div>
+                                    @endif
+                                </div>
+                                <div class="details text-start">
+                                    <h5 class="text-xl my-1 text-[--text-color] capitalize font-semibold">
+                                        {{ $customer->customer }}
+                                    </h5>
+                                    <p class="text-[--secondary-text] tracking-wide text-sm"><strong>Person Name:</strong>
+                                        <span class="person_name">{{ $customer->person_name }}</span>
+                                    </p>
+                                    <p class="text-[--secondary-text] tracking-wide text-sm capitalize">
+                                        <strong>Phone:</strong> <span class="phone">{{ $customer->phone }}</span>
+                                    </p>
+                                    <p class="text-[--secondary-text] tracking-wide text-sm capitalize">
+                                        <strong>Balance:</strong> <span class="phone">{{ $customer->balance }}</span>
+                                    </p>
+                                </div>
+                                <button
+                                    class="absolute bottom-0 right-0 rounded-full w-[25%] aspect-square flex items-center justify-center bg-[--h-bg-color] text-lg translate-x-1/4 translate-y-1/4"><i
+                                        class="fas fa-arrow-right -rotate-45"></i></button>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                <div class="table_container rounded-tl-lg rounded-tr-lg overflow-hidden text-sm">
+                    <div class="grid grid-cols-5 bg-[--primary-color] font-medium">
+                        <div class="p-2">Customer</div>
+                        <div class="p-2">Person Name</div>
+                        <div class="p-2">Phone</div>
+                        <div class="p-2">Balance</div>
+                        <div class="p-2">Status</div>
+                    </div>
+                    @foreach ($customers as $customer)
+                        <div data-customer="{{ $customer }}"
+                        class="modalToggle grid grid-cols-5 text-center border-b border-gray-600 items-center p-2 cursor-pointer hover:bg-[--h-secondary-bg-color] transition-all duration-200 ease-in-out">
+                            <div class="p-2">{{ $customer->customer }}</div>
+                            <div class="p-2">{{ $customer->person_name }}</div>
+                            <div class="p-2">{{ substr($customer->phone, 0, 4) . '-' . substr($customer->phone, 4, 7) }}</div>
+                            <div class="p-2">{{ number_format($customer->balance, 2, '.', ',') }}</div>
+                            <div class="p-2">
+                                @if ($customer->status === 'active')
+                                    <span class="text-green-500">Active</span>
+                                @else
+                                    <span class="text-red-500">Inactive</span>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                @endif
+                @else
+                    <div class="no-article-message w-full h-full flex flex-col items-center justify-center gap-2">
+                        <h1 class="text-md text-[--secondary-text] capitalize">No customer yet</h1>
+                        <a href="{{ route('customer.create') }}"
+                            class="text-md bg-[--primary-color] text-[--text-color] px-4 py-2 rounded-md hover:bg-blue-600 transition-all duration-300 ease-in-out uppercase font-semibold">Add
+                            New</a>
+                    </div>
+                @endif
+            </div>
+        </section>
+
+        <div class="context-menu absolute top-0" style="display: none;">
+            <div class="border border-gray-500 w-48 bg-[--secondary-bg-color] text-[--text-color] shadow-lg rounded-lg transform scale-95 transition-all duration-300 ease-in-out z-50">
+                <ul class="p-2">
+                    <li>
+                        <button id="show-details" type="button" class="flex items-center w-full px-4 py-2 text-left hover:bg-[--h-bg-color] rounded transition-all duration-200 ease-in-out">
+                            Show Details
+                        </button>
+                    </li>
+                    <li>
+                        <a id="show-statment" href="#" class="flex items-center w-full px-4 py-2 text-left hover:bg-[--h-bg-color] rounded transition-all duration-200 ease-in-out">
+                            Show Statment
+                        </a>
+                    </li>
+                    <li>
+                        <button type="button" class="block w-full text-left px-4 py-2 text-red-500 hover:bg-red-100 rounded transition-all duration-200 ease-in-out">
+                            <i class="fas fa-sign-out-alt text-[--secondary-color] mr-3"></i>
+                            Logout
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    <script>
+        let contextMenu = document.querySelector('.context-menu');
+
+        let card = document.querySelectorAll('.modalToggle')
+
+        card.forEach(item => {
+            item.addEventListener('click', () => {
+                generateModal(item)
+            })
+        })
+
+        let isModalOpened = false;
+
+        function openCustomerModal() {
+            document.getElementById('customerModal').classList.remove('hidden');
+            closeAllDropdowns();
+            isModalOpened = true;
+            contextMenu.style.display = 'none';
+        }
+
+        function closeCustomerModal() {
+            document.getElementById('customerModal').classList.add('hidden');
+        }
+
+        document.getElementById('customerModal').addEventListener('click', (e) => {
+            if (e.target.id === 'customerModal') {
+                closeCustomerModal()
+            }
+        })
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isModalOpened) {
+                closeCustomerModal()
+                contextMenu.style.display = 'none';
+            }
+        })
+
+        let cards = document.querySelectorAll('.card');
+
+        cards.forEach(card => {
+            card.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+
+                let item = e.target.closest('.card');
+
+                contextMenu.style.top = `${e.clientY}px`;
+                contextMenu.style.left = `${e.clientX}px`;
+                contextMenu.style.display = 'block';
+
+                document.addEventListener('click', (e) => {
+                    if (e.target.id === "show-details") {
+                            generateModal(item);
+                    }
+                });
+
+                // Function to remove context menu
+                const removeContextMenu = (event) => {
+                    if (!contextMenu.contains(event.target)) {
+                        contextMenu.style.display = 'none';
+                        document.removeEventListener('click', removeContextMenu);
+                        document.removeEventListener('contextmenu', removeContextMenu);
+                    }
+                };
+
+                // Wait for a small delay before attaching event listeners to avoid immediate removal
+                setTimeout(() => {
+                    document.addEventListener('click', removeContextMenu);
+                    document.addEventListener('contextmenu', removeContextMenu);
+                }, 10);
+            });
+        });
+
+        function generateModal(item){
+            console.log(item);
+            
+            let Dataset = JSON.parse(item.dataset.customer);
+            let customerImage = document.getElementById('customerImage')
+            let customer = document.getElementById('customer')
+            let personName = document.getElementById('person_name')
+            let phone = document.getElementById('phone')
+            let balance = document.getElementById('balance')
+            let city = document.getElementById('city')
+            let address = document.getElementById('address')
+            let rating = document.getElementById('rating')
+            let ac_in_btn = document.getElementById('ac_in_btn')
+            let customer_id = document.getElementById('customer_id')
+            let customer_status = document.getElementById('customer_status')
+            let active_inactive_dot_modal = document.getElementById('active_inactive_dot_modal')
+
+            if (Dataset.image) {
+                customerImage.src = `/storage/uploads/images/${Dataset.image}`
+            }
+
+            if (Dataset.status === 'active') {
+                ac_in_btn.classList.add('bg-[--danger-color]')
+                ac_in_btn.classList.remove('bg-[--success-color]')
+                ac_in_btn.classList.add('hover:bg-[--h-danger-color]')
+                ac_in_btn.classList.remove('hover:bg-[--h-success-color]')
+                ac_in_btn.textContent = 'In Active'
+                active_inactive_dot_modal.classList.remove('bg-[--border-error]')
+                active_inactive_dot_modal.classList.add('bg-[--border-success]')
+            } else {
+                ac_in_btn.classList.remove('bg-[--danger-color]')
+                ac_in_btn.classList.remove('hover:bg-[--h-danger-color]')
+                ac_in_btn.classList.add('hover:bg-[--h-success-color]')
+                ac_in_btn.classList.add('bg-[--success-color]')
+                ac_in_btn.textContent = 'Active'
+                active_inactive_dot_modal.classList.add('bg-[--border-error]')
+                active_inactive_dot_modal.classList.remove('bg-[--border-success]')
+            }
+
+            customer_id.value = Dataset.id
+            customer_status.value = Dataset.status
+            customer.textContent = Dataset.customer
+            personName.textContent = Dataset.person_name
+            phone.textContent = Dataset.phone
+            balance.textContent = Dataset.balance
+            city.textContent = Dataset.city
+            address.textContent = Dataset.address
+
+            let ratingValue = Dataset.rating; // The rating value, e.g. 4.0
+
+            // Clear previous stars and value
+            rating.innerHTML = '';
+
+            // Loop to generate the filled stars
+            for (let i = 0; i < Math.floor(ratingValue); i++) {
+                rating.innerHTML += `
+                    <span class="text-yellow-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                    </span>
+                `;
+            }
+
+            // If the rating is not a whole number, display half a star
+            if (ratingValue % 1 !== 0) {
+                rating.innerHTML += `
+                    <span class="text-yellow-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                    </span>
+                `;
+            }
+
+            // Add the remaining empty stars to make the total 5
+            for (let i = Math.floor(ratingValue); i < 5; i++) {
+                rating.innerHTML += `
+                    <span class="text-gray-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                    </span>
+                `;
+            }
+
+            // Add the rating value and the corresponding label next to the stars
+            rating.innerHTML +=
+                `<span class="text-[--text-color] ml-2">(${parseFloat(ratingValue).toFixed(1)})</span>
+            `;
+
+            openCustomerModal()
+        }
+    </script>
+@endsection

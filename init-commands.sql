@@ -1,0 +1,1 @@
+INSERT INTO `users` (`name`, `username`, `password`, `role`, `status`, `profile_picture`, `theme`, `created_at`, `updated_at`) VALUES ('admin', 'admin', '$2y$12$tqKff6Ae/Vyde0HC/0xeQe6xFxBdMqxGwTidxXb9MxoMHUHinT3k.', 'admin', 'active', 'default_avatar.png', 'light', NOW(), NOW());
