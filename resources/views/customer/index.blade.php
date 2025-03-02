@@ -6,12 +6,12 @@
     <div id="customerModal"
         class="mainModal hidden fixed flex-col space-y-4 inset-0 z-50 items-center justify-center bg-black bg-opacity-50 fade-in">
 
-        <form method="POST" action="{{ route('update-customer-status') }}" class="w-full h-full flex flex-col space-y-4 items-center justify-center">
+        <form id="customerModalForm" method="POST" action="{{ route('update-customer-status') }}" class="w-full h-full flex flex-col space-y-4 items-center justify-center">
             @csrf
             <!-- Modal Content -->
             <div class="bg-[--secondary-bg-color] rounded-xl shadow-lg w-full max-w-2xl p-6 relative flex">
                 <!-- Close Button -->
-                <button onclick="closeCustomerModal()"
+                <button onclick="closeCustomerModal()" type="button"
                     class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-all 0.3s ease-in-out">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
                         class="w-6 h-6">
@@ -387,8 +387,8 @@
             document.getElementById('customerModal').classList.remove('flex');
         };
 
-        document.getElementById('customerModal').addEventListener('click', (e) => {
-            if (e.target.id === 'customerModal') {
+        document.getElementById('customerModalForm').addEventListener('click', (e) => {
+            if (e.target.id === 'customerModalForm') {
                 closeCustomerModal();
             };
         });
